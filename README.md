@@ -20,7 +20,7 @@ scp file to server
 
 $ source test.sh
 
-$ hadoop -jar <name>.jar hello.QueryNumSpeedsOver100
+$ hadoop -jar jarname.jar hello.QueryNumSpeedsOver100
 
 $ /usr/local/HBase/bin/hbase shell
 > scan 'results'
