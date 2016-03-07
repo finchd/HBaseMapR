@@ -5,9 +5,13 @@ Import from exisiting source - select pom.xml
 make sure it will compile, if not, setup jdk path
 
 File - Project Structure
+
 --Artifacts
+
 --- +
+
 ---- Select 'gs-spring-boot' compiled output
+
 ---- Select build on make.
 
 --- Verify that unnamed.jar was created in out directory - should be 4.3k rougly as of now
