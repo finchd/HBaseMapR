@@ -17,7 +17,9 @@ File - Project Structure
 --- Verify that unnamed.jar was created in out directory - should be 4.3k rougly as of now
 
 scp file to server
+
 $ source test.sh
+
 $ hadoop -jar <name>.jar hello.QueryNumSpeedsOver100
 
 $ /usr/local/HBase/bin/hbase shell
