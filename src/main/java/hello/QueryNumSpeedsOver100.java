@@ -63,6 +63,7 @@ public class QueryNumSpeedsOver100 {
             e.printStackTrace();
         }
 
+        //test.main();
     }
 
     public static class MyMapper1 extends TableMapper<Text, IntWritable> {
@@ -76,7 +77,8 @@ public class QueryNumSpeedsOver100 {
         public void map(ImmutableBytesWritable row, Result value, Context context) throws IOException, InterruptedException {
 
             try {
-                Query1(value, context);
+                //Query1(value, context);
+                Query2(value, context);
             } catch (ParseException e) {
                 //do nothing - invalid row
             }
@@ -140,6 +142,51 @@ public class QueryNumSpeedsOver100 {
                     context.write(text, ONE);
             }
         }
+
+        private void Query2(Result value, Context context) throws IOException, InterruptedException, ParseException{
+            String val = Bytes.toString(value.getValue(CF, ATTR1));
+            String startTime = Bytes.toString(value.getValue(CF, ATTR2));
+
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss-SS");
+            Date time = format.parse(startTime);
+
+            text.set("Table init:");
+            context.write(text, ONE);
+            //Get locationid for station name "Foster NB" (1049)
+
+            //Get detectorids for stationid (1377,1378,1379)
+
+            //Get loopdata for September 22, 2011 7-9AM and 4-6PM
+            Date morningStart = format.parse("2011-09-22 07:00:00-00");
+            Date morningEnd   = format.parse("2011-09-22 09:00:00-59");
+            Date rushStart    = format.parse("2011-09-22 16:00:00-00");
+            Date rushEnd      = format.parse("2011-09-22 18:00:00-59");
+
+            text.set("Table time:");
+            context.write(text, ONE);
+
+            if (!val.isEmpty() && !val.equals("speed") ) {
+                Integer speed   = Integer.parseInt(val);
+
+                text.set("Morning Peak Before:");
+                context.write(text, ONE);
+
+                if ( time.equals(morningStart) ||  (time.after(morningStart) && time.before(morningEnd)) || time.equals(morningEnd) ) {
+                    text.set("Morning Peak Speed:");
+                    context.write(text, new IntWritable(speed));
+                    text.set("Total Morning Records");
+                    context.write(text, ONE);
+                }
+
+                if (time.equals(rushStart) || (time.after(rushStart) && time.before(rushEnd)) || time.equals(rushEnd) )  {
+                    text.set("Rush Peak Speed:");
+                    context.write(text, new IntWritable(speed));
+                    text.set("Total Rush Records");
+                    context.write(text, ONE);
+                }
+            }
+        }
+
     }
 
     public static class MyTableReducer extends TableReducer<Text, IntWritable, ImmutableBytesWritable> {
