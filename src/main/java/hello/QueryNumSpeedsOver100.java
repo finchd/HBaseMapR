@@ -70,6 +70,7 @@ public class QueryNumSpeedsOver100 {
         public static final byte[] CF = "freeway_loopdata".getBytes();
         public static final byte[] ATTR1 = "speed".getBytes();
         public static final byte[] ATTR2 = "starttime".getBytes();
+        public static final byte[] ATTR4 = "detectorid".getBytes();
 
         private final IntWritable ONE = new IntWritable(1);
         private Text text = new Text();
@@ -146,12 +147,11 @@ public class QueryNumSpeedsOver100 {
         private void Query2(Result value, Context context) throws IOException, InterruptedException, ParseException{
             String val = Bytes.toString(value.getValue(CF, ATTR1));
             String startTime = Bytes.toString(value.getValue(CF, ATTR2));
+            String detectorID = Bytes.toString(value.getValue(CF, ATTR4));
 
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss-SS");
             Date time = format.parse(startTime);
 
-            text.set("Table init:");
-            context.write(text, ONE);
             //Get locationid for station name "Foster NB" (1049)
 
             //Get detectorids for stationid (1377,1378,1379)
@@ -162,10 +162,9 @@ public class QueryNumSpeedsOver100 {
             Date rushStart    = format.parse("2011-09-22 16:00:00-00");
             Date rushEnd      = format.parse("2011-09-22 18:00:00-59");
 
-            text.set("Table time:");
-            context.write(text, ONE);
+            String detectorIDs[] = new String[] {"1361", "1362", "1363"};
 
-            if (!val.isEmpty() && !val.equals("speed") ) {
+            if (!val.isEmpty() && !val.equals("speed") && Arrays.asList(detectorIDs).contains(detectorID) ) {
                 Integer speed   = Integer.parseInt(val);
 
                 text.set("Morning Peak Before:");
